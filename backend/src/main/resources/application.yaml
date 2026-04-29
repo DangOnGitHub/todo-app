@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: todo-app
+  jackson:
+    default-property-inclusion: non_null
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-seconds: 3600

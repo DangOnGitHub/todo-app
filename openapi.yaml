@@ -6,23 +6,25 @@ info:
   description: REST API for a personal todo list application.
 
 servers:
-  - url: https://todo.dangdoan.com
+  - url: https://api.todo.dangdoan.com
     description: Production
+  - url: http://localhost:8080
+    description: Local
 
 security:
   - bearerAuth: []
 
 tags:
   - name: Auth
-    description: Registration and login
+    description: Sign up and login
   - name: Todos
     description: Todo management
 
 paths:
-  /auth/register:
+  /auth/signup:
     post:
-      summary: Register a new user account
-      operationId: register
+      summary: Sign up for a new account
+      operationId: signup
       security: []
       tags: [Auth]
       requestBody:
@@ -39,7 +41,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '409':
-          description: Username already taken
+          description: Username is already taken
           content:
             application/problem+json:
               schema:
@@ -51,6 +53,8 @@ paths:
                 detail: Username 'johndoe' is already taken.
         '422':
           $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /auth/login:
     post:
@@ -84,6 +88,8 @@ paths:
                 detail: Invalid username or password.
         '422':
           $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /todos:
     get:
@@ -108,6 +114,8 @@ paths:
                   $ref: '#/components/schemas/TodoResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     post:
       summary: Create a new todo
@@ -130,6 +138,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '422':
           $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /todos/{id}:
     parameters:
@@ -158,6 +168,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     patch:
       summary: Partially update a todo
@@ -184,6 +196,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     delete:
       summary: Delete a todo
@@ -198,6 +212,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -307,6 +323,31 @@ components:
           format: uri-reference
           description: A URI reference identifying the specific occurrence.
 
+    ValidationError:
+      type: object
+      required: [detail, pointer]
+      properties:
+        detail:
+          type: string
+          description: Error message for this field
+          examples: ["must be a positive integer"]
+        pointer:
+          type: string
+          format: json-pointer
+          description: JSON Pointer to the offending field
+          examples: ["#/age"]
+
+    ValidationProblem:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          required: [errors]
+          properties:
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/ValidationError'
+
   responses:
     Unauthorized:
       description: Missing or invalid Bearer token
@@ -343,16 +384,31 @@ components:
             title: Not Found
             status: 404
             detail: Todo with id 42 was not found.
-            instance: /todos/42
 
     UnprocessableContent:
       description: Request body failed validation
       content:
         application/problem+json:
           schema:
+            $ref: '#/components/schemas/ValidationProblem'
+          example:
+            type: https://api.todo.dangdoan.com/validation-error
+            title: Your request is not valid.
+            status: 422
+            errors:
+              - detail: must not be blank
+                pointer: "#/title"
+              - detail: size must be between 3 and 50
+                pointer: "#/username"
+
+    InternalServerError:
+      description: Unexpected server error
+      content:
+        application/problem+json:
+          schema:
             $ref: '#/components/schemas/Problem'
           example:
             type: about:blank
-            title: Unprocessable Content
-            status: 422
-            detail: "title: must not be blank"
+            title: Internal Server Error
+            status: 500
+            detail: An unexpected error occurred. Please try again later.
