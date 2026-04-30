@@ -1,8 +1,9 @@
 package com.dangdoan.todoapp.controller;
 
 import com.dangdoan.todoapp.api.AuthApi;
-import com.dangdoan.todoapp.model.AuthRequest;
 import com.dangdoan.todoapp.model.AuthResponse;
+import com.dangdoan.todoapp.model.LoginRequest;
+import com.dangdoan.todoapp.model.SignUpRequest;
 import com.dangdoan.todoapp.service.AuthService;
 import com.dangdoan.todoapp.service.AuthToken;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,14 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<AuthResponse> signup(AuthRequest authRequest) {
-    var token = authService.signup(authRequest.getUsername(), authRequest.getPassword());
+  public ResponseEntity<AuthResponse> signup(SignUpRequest signUpRequest) {
+    var token = authService.signup(signUpRequest.getUsername(), signUpRequest.getPassword());
     return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(token));
   }
 
   @Override
-  public ResponseEntity<AuthResponse> login(AuthRequest authRequest) {
-    var token = authService.login(authRequest.getUsername(), authRequest.getPassword());
+  public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {
+    var token = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
     return ResponseEntity.ok(toResponse(token));
   }
 

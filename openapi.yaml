@@ -32,7 +32,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthRequest'
+              $ref: '#/components/schemas/SignUpRequest'
       responses:
         '201':
           description: User registered successfully
@@ -67,7 +67,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthRequest'
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
           description: Authentication successful
@@ -269,7 +269,19 @@ components:
           type: boolean
           examples: [true]
 
-    AuthRequest:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          examples: ["johndoe"]
+        password:
+          type: string
+          writeOnly: true
+          examples: ["s3cr3t!!"]
+
+    SignUpRequest:
       type: object
       required: [username, password]
       properties:

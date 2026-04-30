@@ -113,7 +113,13 @@ export interface components {
             /** @example true */
             completed?: boolean;
         };
-        AuthRequest: {
+        LoginRequest: {
+            /** @example johndoe */
+            username: string;
+            /** @example s3cr3t!! */
+            password: string;
+        };
+        SignUpRequest: {
             /** @example johndoe */
             username: string;
             /** @example s3cr3t!! */
@@ -276,7 +282,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AuthRequest"];
+                "application/json": components["schemas"]["SignUpRequest"];
             };
         };
         responses: {
@@ -319,7 +325,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AuthRequest"];
+                "application/json": components["schemas"]["LoginRequest"];
             };
         };
         responses: {

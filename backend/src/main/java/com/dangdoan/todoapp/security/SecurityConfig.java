@@ -57,8 +57,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
-    config.setAllowedOrigins(
-        List.of("https://todo.dangdoan.com", "http://localhost:5173")); // Vite dev server
+    config.setAllowedOrigins(List.of("https://todo.dangdoan.com", "http://localhost:5173"));
     config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);

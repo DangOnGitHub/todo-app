@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -54,6 +55,15 @@ public class GlobalExceptionHandler {
     var problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
     problemDetail.setDetail("Malformed request body.");
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(problemDetail);
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  ResponseEntity<ProblemDetail> handleNoResourceFound(NoResourceFoundException ex) {
+    var problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problemDetail.setDetail("No endpoint at " + ex.getResourcePath() + ".");
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(problemDetail);
   }
