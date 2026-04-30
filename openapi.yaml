@@ -34,14 +34,14 @@ paths:
             schema:
               $ref: '#/components/schemas/SignUpRequest'
       responses:
-        '201':
-          description: User registered successfully
+        '202':
+          description: User registered, verification email sent
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/SignUpResponse'
         '409':
-          description: Username is already taken
+          description: Email is already taken
           content:
             application/problem+json:
               schema:
@@ -50,7 +50,42 @@ paths:
                 type: about:blank
                 title: Conflict
                 status: 409
-                detail: Username 'johndoe' is already taken.
+                detail: Email 'user@example.com' is already taken.
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/verify:
+    post:
+      summary: Verify email with token
+      operationId: verify
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRequest'
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid or expired verification token
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: Verification token is invalid or expired.
         '422':
           $ref: '#/components/responses/UnprocessableContent'
         '500':
@@ -76,16 +111,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '401':
-          description: Invalid credentials
+          description: Invalid credentials or email not verified
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-              example:
-                type: about:blank
-                title: Unauthorized
-                status: 401
-                detail: Invalid username or password.
+              examples:
+                invalidCredentials:
+                  value:
+                    type: about:blank
+                    title: Unauthorized
+                    status: 401
+                    detail: Invalid email or password.
+                emailNotVerified:
+                  value:
+                    type: about:blank
+                    title: Unauthorized
+                    status: 401
+                    detail: Email not verified. Check your inbox for verification link.
         '422':
           $ref: '#/components/responses/UnprocessableContent'
         '500':
@@ -271,11 +314,12 @@ components:
 
     LoginRequest:
       type: object
-      required: [username, password]
+      required: [email, password]
       properties:
-        username:
+        email:
           type: string
-          examples: ["johndoe"]
+          format: email
+          examples: ["user@example.com"]
         password:
           type: string
           writeOnly: true
@@ -283,18 +327,33 @@ components:
 
     SignUpRequest:
       type: object
-      required: [username, password]
+      required: [email, password]
       properties:
-        username:
+        email:
           type: string
-          minLength: 3
-          maxLength: 50
-          examples: ["johndoe"]
+          format: email
+          examples: ["user@example.com"]
         password:
           type: string
           minLength: 8
           writeOnly: true
           examples: ["s3cr3t!!"]
+
+    SignUpResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          examples: ["Verification email sent. Check your inbox to verify your account."]
+
+    VerifyRequest:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+          examples: ["550e8400-e29b-41d4-a716-446655440000"]
 
     AuthResponse:
       type: object

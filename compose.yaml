@@ -10,5 +10,11 @@ services:
     volumes:
       - db_data:/var/lib/postgresql
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   db_data:

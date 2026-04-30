@@ -33,6 +33,15 @@ public class GlobalExceptionHandler {
         .body(problemDetail);
   }
 
+  @ExceptionHandler(EmailNotVerifiedException.class)
+  ResponseEntity<ProblemDetail> handleEmailNotVerified(EmailNotVerifiedException ex) {
+    var problemDetail = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+    problemDetail.setDetail(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(problemDetail);
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   ResponseEntity<ValidationProblem> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex) {

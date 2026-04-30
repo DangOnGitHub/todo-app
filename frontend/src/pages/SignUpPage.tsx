@@ -2,20 +2,20 @@ import { useState } from 'react';
 import { api } from '../api/client';
 import type { components } from '../api/schema';
 
-type AuthResponse = components['schemas']['AuthResponse'];
+type SignUpResponse = components['schemas']['SignUpResponse'];
 type Problem = components['schemas']['Problem'];
 
 interface Props {
-  onLogin: (token: string) => void;
   onGoToLogin: () => void;
 }
 
-export default function SignUpPage({ onLogin, onGoToLogin }: Props) {
-  const [username, setUsername] = useState('');
+export default function SignUpPage({ onGoToLogin }: Props) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   async function submit(e: React.SubmitEvent) {
     e.preventDefault();
@@ -26,8 +26,8 @@ export default function SignUpPage({ onLogin, onGoToLogin }: Props) {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.post<AuthResponse>('/auth/signup', { username, password });
-      onLogin(res.accessToken);
+      await api.post<SignUpResponse>('/auth/signup', { email, password });
+      setVerificationSent(true);
     } catch (err) {
       const problem = err as Problem;
       setError(problem.detail ?? problem.title ?? 'Something went wrong');
@@ -36,19 +36,32 @@ export default function SignUpPage({ onLogin, onGoToLogin }: Props) {
     }
   }
 
+  if (verificationSent) {
+    return (
+      <div>
+        <h1>Check your email</h1>
+        <p>
+          We sent a verification link to <strong>{email}</strong>.
+        </p>
+        <p>Click the link in the email to verify your account and sign in.</p>
+        <button type="button" onClick={onGoToLogin}>
+          Back to login
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>Sign up</h1>
       <form onSubmit={submit}>
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
-          minLength={3}
-          maxLength={50}
-          autoComplete="username"
+          autoComplete="email"
         />
         <input
           type="password"

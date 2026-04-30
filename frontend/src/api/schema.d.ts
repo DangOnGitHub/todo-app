@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify email with token */
+        post: operations["verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -114,16 +131,30 @@ export interface components {
             completed?: boolean;
         };
         LoginRequest: {
-            /** @example johndoe */
-            username: string;
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
             /** @example s3cr3t!! */
             password: string;
         };
         SignUpRequest: {
-            /** @example johndoe */
-            username: string;
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
             /** @example s3cr3t!! */
             password: string;
+        };
+        SignUpResponse: {
+            /** @example Verification email sent. Check your inbox to verify your account. */
+            message: string;
+        };
+        VerifyRequest: {
+            /** @example 550e8400-e29b-41d4-a716-446655440000 */
+            token: string;
         };
         AuthResponse: {
             accessToken: string;
@@ -286,16 +317,16 @@ export interface operations {
             };
         };
         responses: {
-            /** @description User registered successfully */
-            201: {
+            /** @description User registered, verification email sent */
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AuthResponse"];
+                    "application/json": components["schemas"]["SignUpResponse"];
                 };
             };
-            /** @description Username is already taken */
+            /** @description Email is already taken */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -306,7 +337,50 @@ export interface operations {
                      *       "type": "about:blank",
                      *       "title": "Conflict",
                      *       "status": 409,
-                     *       "detail": "Username 'johndoe' is already taken."
+                     *       "detail": "Email 'user@example.com' is already taken."
+                     *     }
+                     */
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            422: components["responses"]["UnprocessableContent"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description Email verified successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Invalid or expired verification token */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "type": "about:blank",
+                     *       "title": "Bad Request",
+                     *       "status": 400,
+                     *       "detail": "Verification token is invalid or expired."
                      *     }
                      */
                     "application/problem+json": components["schemas"]["Problem"];
@@ -338,20 +412,12 @@ export interface operations {
                     "application/json": components["schemas"]["AuthResponse"];
                 };
             };
-            /** @description Invalid credentials */
+            /** @description Invalid credentials or email not verified */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    /**
-                     * @example {
-                     *       "type": "about:blank",
-                     *       "title": "Unauthorized",
-                     *       "status": 401,
-                     *       "detail": "Invalid username or password."
-                     *     }
-                     */
                     "application/problem+json": components["schemas"]["Problem"];
                 };
             };

@@ -1,17 +1,32 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from './store/auth';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import VerifyPage from './pages/VerifyPage';
 
 export default function App() {
   const { isAuthenticated, login, logout } = useAuth();
-  const [page, setPage] = useState<'login' | 'signup'>('login');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
-    if (page === 'signup') {
-      return <SignUpPage onLogin={login} onGoToLogin={() => setPage('login')} />;
-    }
-    return <LoginPage onLogin={login} onGoToSignUp={() => setPage('signup')} />;
+    return (
+      <Routes>
+        <Route path="/signup" element={<SignUpPage onGoToLogin={() => navigate('/login')} />} />
+        <Route path="/verify" element={<VerifyPage onLogin={login} />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route
+          path="/login"
+          element={<LoginPage onLogin={login} onGoToSignUp={() => navigate('/signup')} />}
+        />
+      </Routes>
+    );
   }
 
   return (

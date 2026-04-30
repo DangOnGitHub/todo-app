@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.post<AuthResponse>('/auth/login', { username, password });
+      const res = await api.post<AuthResponse>('/auth/login', { email, password });
       onLogin(res.accessToken);
     } catch (err) {
       const problem = err as Problem;
@@ -36,12 +36,12 @@ export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
       <h1>Login</h1>
       <form onSubmit={submit}>
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
-          autoComplete="username"
+          autoComplete="email"
         />
         <input
           type="password"
