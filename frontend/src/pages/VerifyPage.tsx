@@ -39,7 +39,7 @@ export default function VerifyPage({ onLogin }: Props) {
 
   if (status === 'verifying') {
     return (
-      <div>
+      <div className="auth-page">
         <h1>Verifying your email…</h1>
         <p>Please wait while we verify your email address.</p>
       </div>
@@ -48,7 +48,7 @@ export default function VerifyPage({ onLogin }: Props) {
 
   if (status === 'success') {
     return (
-      <div>
+      <div className="auth-page">
         <h1>Email verified!</h1>
         <p>Your email has been verified. Redirecting…</p>
       </div>
@@ -56,7 +56,7 @@ export default function VerifyPage({ onLogin }: Props) {
   }
 
   return (
-    <div>
+    <div className="auth-page">
       <h1>Verification failed</h1>
       <p role="alert">{error}</p>
       <p>The verification link may have expired or is invalid.</p>

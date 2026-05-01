@@ -31,7 +31,7 @@ export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
   }
 
   return (
-    <div>
+    <div className="auth-page">
       <h1>Login</h1>
       <form onSubmit={submit}>
         <input
@@ -50,9 +50,7 @@ export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
           required
           autoComplete="current-password"
         />
-        <p role="alert" style={{ minHeight: '1.25rem' }}>
-          {error}
-        </p>
+        <p role="alert">{error}</p>
         <button type="submit" disabled={loading}>
           {loading ? 'Please wait…' : 'Login'}
         </button>

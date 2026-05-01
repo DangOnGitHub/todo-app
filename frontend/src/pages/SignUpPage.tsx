@@ -38,7 +38,7 @@ export default function SignUpPage({ onGoToLogin }: Props) {
 
   if (verificationSent) {
     return (
-      <div>
+      <div className="auth-page">
         <h1>Check your email</h1>
         <p>
           We sent a verification link to <strong>{email}</strong>.
@@ -52,7 +52,7 @@ export default function SignUpPage({ onGoToLogin }: Props) {
   }
 
   return (
-    <div>
+    <div className="auth-page">
       <h1>Sign up</h1>
       <form onSubmit={submit}>
         <input
@@ -81,9 +81,7 @@ export default function SignUpPage({ onGoToLogin }: Props) {
           minLength={8}
           autoComplete="new-password"
         />
-        <p role="alert" style={{ minHeight: '1.25rem' }}>
-          {error}
-        </p>
+        <p role="alert">{error}</p>
         <button type="submit" disabled={loading}>
           {loading ? 'Please wait…' : 'Sign up'}
         </button>
