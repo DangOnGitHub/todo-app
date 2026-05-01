@@ -4,6 +4,7 @@ import { useAuth } from './store/auth';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import VerifyPage from './pages/VerifyPage';
+import TodoPage from './pages/TodoPage';
 
 export default function App() {
   const { isAuthenticated, login, logout } = useAuth();
@@ -29,11 +30,5 @@ export default function App() {
     );
   }
 
-  return (
-    <div id="app">
-      <button type="button" onClick={logout}>
-        Log out
-      </button>
-    </div>
-  );
+  return <TodoPage onLogout={logout} />;
 }
