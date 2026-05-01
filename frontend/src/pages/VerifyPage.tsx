@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { api } from '../api/client';
-import type { components } from '../api/schema';
+import { api, type ApiSchema } from '../api/client';
 
-type AuthResponse = components['schemas']['AuthResponse'];
-type Problem = components['schemas']['Problem'];
+type AuthResponse = ApiSchema<'AuthResponse'>;
+type Problem = ApiSchema<'Problem'>;
 
 interface Props {
   onLogin: (token: string) => void;
@@ -25,8 +24,8 @@ export default function VerifyPage({ onLogin }: Props) {
       }
 
       try {
-        const res = await api.post<AuthResponse>('/auth/verify', { token });
-        onLogin(res.accessToken);
+        const response = await api.post<AuthResponse>('/auth/verify', { token });
+        onLogin(response.accessToken);
         setStatus('success');
       } catch (err) {
         const problem = err as Problem;

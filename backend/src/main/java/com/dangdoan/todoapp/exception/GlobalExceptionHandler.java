@@ -2,6 +2,7 @@ package com.dangdoan.todoapp.exception;
 
 import com.dangdoan.todoapp.model.ValidationError;
 import com.dangdoan.todoapp.model.ValidationProblem;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -40,6 +41,37 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(problemDetail);
+  }
+
+  @ExceptionHandler(TodoNotFoundException.class)
+  ResponseEntity<ProblemDetail> handleTodoNotFound(TodoNotFoundException ex) {
+    var problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problemDetail.setDetail(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(problemDetail);
+  }
+
+  @ExceptionHandler(TodoAccessDeniedException.class)
+  ResponseEntity<ProblemDetail> handleTodoAccessDenied(TodoAccessDeniedException ex) {
+    var problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+    problemDetail.setDetail(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(problemDetail);
+  }
+
+  @ExceptionHandler(EmptyUpdateException.class)
+  ResponseEntity<ValidationProblem> handleEmptyUpdate(EmptyUpdateException ex) {
+    var errors = List.of(new ValidationError(ex.getMessage(), "#/"));
+    var problem = new ValidationProblem();
+    problem.setType("https://api.todo.dangdoan.com/validation-error");
+    problem.setTitle("Your request is not valid.");
+    problem.setStatus(HttpStatus.UNPROCESSABLE_CONTENT.value());
+    problem.setErrors(errors);
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(problem);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

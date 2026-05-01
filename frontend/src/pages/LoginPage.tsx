@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { api } from '../api/client';
-import type { components } from '../api/schema';
+import { api, type ApiSchema } from '../api/client';
 
-type AuthResponse = components['schemas']['AuthResponse'];
-type Problem = components['schemas']['Problem'];
+type AuthResponse = ApiSchema<'AuthResponse'>;
+type Problem = ApiSchema<'Problem'>;
 
 interface Props {
   onLogin: (token: string) => void;
@@ -21,8 +20,8 @@ export default function LoginPage({ onLogin, onGoToSignUp }: Props) {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.post<AuthResponse>('/auth/login', { email, password });
-      onLogin(res.accessToken);
+      const response = await api.post<AuthResponse>('/auth/login', { email, password });
+      onLogin(response.accessToken);
     } catch (err) {
       const problem = err as Problem;
       setError(problem.detail ?? problem.title ?? 'Something went wrong');

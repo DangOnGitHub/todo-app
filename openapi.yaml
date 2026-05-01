@@ -3,7 +3,7 @@ openapi: 3.1.0
 info:
   title: Todo API
   version: 1.0.0
-  description: REST API for a personal todo list application.
+  description: Personal task management API with user authentication and todo management.
 
 servers:
   - url: https://api.todo.dangdoan.com
@@ -16,9 +16,9 @@ security:
 
 tags:
   - name: Auth
-    description: Sign up and login
+    description: User registration, email verification, and login
   - name: Todos
-    description: Todo management
+    description: Create, read, update, and delete todos
 
 paths:
   /auth/signup:
@@ -35,7 +35,7 @@ paths:
               $ref: '#/components/schemas/SignUpRequest'
       responses:
         '202':
-          description: User registered, verification email sent
+          description: Sign-up successful, verification email sent
           content:
             application/json:
               schema:
@@ -93,7 +93,7 @@ paths:
 
   /auth/login:
     post:
-      summary: Authenticate and receive a JWT
+      summary: Log in with email and password
       operationId: login
       security: []
       tags: [Auth]
@@ -136,7 +136,7 @@ paths:
 
   /todos:
     get:
-      summary: List the authenticated user's todos
+      summary: List todos, optionally filtered by completion status
       operationId: listTodos
       tags: [Todos]
       parameters:
@@ -145,7 +145,7 @@ paths:
           required: false
           schema:
             type: boolean
-          description: Filter by completion status
+          description: Filter by completion status (true for completed, false for pending)
       responses:
         '200':
           description: Array of todos
@@ -195,7 +195,7 @@ paths:
         description: Todo identifier
 
     get:
-      summary: Get a single todo
+      summary: Retrieve a specific todo by ID
       operationId: getTodo
       tags: [Todos]
       responses:
@@ -215,7 +215,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
     patch:
-      summary: Partially update a todo
+      summary: Update a todo's title or completion status
       operationId: updateTodo
       tags: [Todos]
       requestBody:
@@ -243,7 +243,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
     delete:
-      summary: Delete a todo
+      summary: Delete a specific todo by ID
       operationId: deleteTodo
       tags: [Todos]
       responses:
@@ -268,7 +268,7 @@ components:
   schemas:
     TodoResponse:
       type: object
-      required: [id, title, completed, createdAt, updatedAt]
+      required: [id, title, completed, created_at, updated_at]
       properties:
         id:
           type: integer
@@ -280,11 +280,11 @@ components:
         completed:
           type: boolean
           examples: [false]
-        createdAt:
+        created_at:
           type: string
           format: date-time
           examples: ["2026-04-28T10:00:00Z"]
-        updatedAt:
+        updated_at:
           type: string
           format: date-time
           examples: ["2026-04-28T10:00:00Z"]
@@ -357,14 +357,14 @@ components:
 
     AuthResponse:
       type: object
-      required: [accessToken, tokenType, expiresIn]
+      required: [access_token, token_type, expires_in]
       properties:
-        accessToken:
+        access_token:
           type: string
-        tokenType:
+        token_type:
           type: string
           enum: [Bearer]
-        expiresIn:
+        expires_in:
           type: integer
           description: Token validity in seconds
           examples: [3600]

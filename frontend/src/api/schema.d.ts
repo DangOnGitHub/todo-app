@@ -113,12 +113,12 @@ export interface components {
              * Format: date-time
              * @example 2026-04-28T10:00:00Z
              */
-            createdAt: string;
+            created_at: string;
             /**
              * Format: date-time
              * @example 2026-04-28T10:00:00Z
              */
-            updatedAt: string;
+            updated_at: string;
         };
         CreateTodoRequest: {
             /** @example Buy groceries */
@@ -157,14 +157,14 @@ export interface components {
             token: string;
         };
         AuthResponse: {
-            accessToken: string;
+            access_token: string;
             /** @enum {string} */
-            tokenType: "Bearer";
+            token_type: "Bearer";
             /**
              * @description Token validity in seconds
              * @example 3600
              */
-            expiresIn: number;
+            expires_in: number;
         };
         Problem: {
             /**

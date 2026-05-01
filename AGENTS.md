@@ -34,3 +34,4 @@ Run `docker compose up -d` for the local DB.
 - **OpenAPI-first**: never edit generated code under `build/generated/`. Re-run `openApiGenerate` after changing `openapi.yaml`.
 - **Errors**: RFC 9457 — all error responses use `Content-Type: application/problem+json`.
 - **Auth**: stateless JWT Bearer. `SecurityConfig` permits `/auth/**`, requires auth on everything else.
+- **Naming**: use full variable names (`request`, `response`, `user`) not abbreviations (`req`, `res`, `usr`). Abbreviated names are harder to read for non-native English speakers and hurt code clarity.
