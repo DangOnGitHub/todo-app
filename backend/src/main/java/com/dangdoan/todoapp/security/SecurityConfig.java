@@ -1,6 +1,7 @@
 package com.dangdoan.todoapp.security;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,13 @@ public class SecurityConfig {
       "{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Missing or invalid Bearer token.\"}";
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter)
+  public SecurityFilterChain filterChain(
+      HttpSecurity http,
+      JwtAuthenticationFilter jwtFilter,
+      CorsConfigurationSource corsConfigurationSource)
       throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
@@ -55,10 +59,10 @@ public class SecurityConfig {
   }
 
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
+  public CorsConfigurationSource corsConfigurationSource(
+      @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
     var config = new CorsConfiguration();
-    config.setAllowedOrigins(
-        List.of("https://todo.dangdoan.com", "http://localhost:5173", "http://127.0.0.1:5173"));
+    config.setAllowedOrigins(allowedOrigins);
     config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);
