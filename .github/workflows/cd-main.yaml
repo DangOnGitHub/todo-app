@@ -1,0 +1,160 @@
+name: CD — Main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-push-backend:
+    name: Build, Scan & Push Backend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute backend tags
+        id: meta-backend
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/dangongithub/todo-app/backend
+          tags: |
+            type=raw,value=edge
+            type=sha,prefix=main-,format=short
+
+      - name: Build backend image for scanning
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: false
+          load: true
+          tags: backend:scan-target
+          cache-from: type=registry,ref=ghcr.io/dangongithub/todo-app/backend:buildcache
+
+      - name: Scan backend image (SARIF report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: backend:scan-target
+          format: sarif
+          output: trivy-backend.sarif
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: os,library
+
+      - name: Upload backend scan results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: trivy-backend.sarif
+          category: trivy-backend
+
+      - name: Gate on backend vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: backend:scan-target
+          format: table
+          exit-code: "1"
+          severity: CRITICAL
+          ignore-unfixed: true
+          vuln-type: os,library
+
+      - name: Push backend image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          cache-from: type=registry,ref=ghcr.io/dangongithub/todo-app/backend:buildcache
+          cache-to: type=registry,ref=ghcr.io/dangongithub/todo-app/backend:buildcache,mode=max
+
+  build-push-frontend:
+    name: Build, Scan & Push Frontend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute frontend tags
+        id: meta-frontend
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/dangongithub/todo-app/frontend
+          tags: |
+            type=raw,value=edge
+            type=sha,prefix=main-,format=short
+
+      - name: Build frontend image for scanning
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: false
+          load: true
+          tags: frontend:scan-target
+          build-args: VITE_API_URL=${{ vars.VITE_API_URL }}
+          cache-from: type=registry,ref=ghcr.io/dangongithub/todo-app/frontend:buildcache
+
+      - name: Scan frontend image (SARIF report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:scan-target
+          format: sarif
+          output: trivy-frontend.sarif
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: os,library
+
+      - name: Upload frontend scan results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: trivy-frontend.sarif
+          category: trivy-frontend
+
+      - name: Gate on frontend vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: frontend:scan-target
+          format: table
+          exit-code: "1"
+          severity: CRITICAL
+          ignore-unfixed: true
+          vuln-type: os,library
+
+      - name: Push frontend image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          build-args: VITE_API_URL=${{ vars.VITE_API_URL }}
+          cache-from: type=registry,ref=ghcr.io/dangongithub/todo-app/frontend:buildcache
+          cache-to: type=registry,ref=ghcr.io/dangongithub/todo-app/frontend:buildcache,mode=max

@@ -24,9 +24,7 @@ npm run dev        # dev server at http://localhost:5173
 ```
 
 ## Environment variables
-Required at runtime — no defaults, app refuses to start if missing:
-- `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` — PostgreSQL connection
-- `JWT_SECRET` — Base64-encoded key, minimum 32 bytes
+Required at runtime — no defaults, app refuses to start if missing. See `.env.example` for the full list.
 
 Run `docker compose up -d` for the local DB.
 

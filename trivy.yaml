@@ -1,0 +1,3 @@
+vuln-type: os,library
+scanners: vuln
+ignore-unfixed: true
