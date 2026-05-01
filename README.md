@@ -34,10 +34,6 @@ docker compose up -d
 
 Starts the database, backend, and frontend together. See `.env.example` for all required variables.
 
-## Development
-
-See [AGENTS.md](AGENTS.md) for key commands, code generation workflow, and architecture notes.
-
 ## Docker pipeline
 
 See [docs/docker-pipeline.md](docs/docker-pipeline.md) for the CI/CD workflow, image tagging strategy, vulnerability scanning, and release process.
