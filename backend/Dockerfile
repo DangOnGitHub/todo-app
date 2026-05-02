@@ -9,7 +9,15 @@ COPY openapi.yaml /workspace/openapi.yaml
 COPY backend/src src
 RUN ./gradlew bootJar --no-daemon
 
+FROM eclipse-temurin:25-jre-alpine AS extract
+WORKDIR /builder
+COPY --from=build /workspace/backend/build/libs/*.jar application.jar
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+
 FROM eclipse-temurin:25-jre-alpine
-WORKDIR /app
-COPY --from=build /workspace/backend/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+WORKDIR /application
+COPY --from=extract /builder/extracted/dependencies/ ./
+COPY --from=extract /builder/extracted/spring-boot-loader/ ./
+COPY --from=extract /builder/extracted/snapshot-dependencies/ ./
+COPY --from=extract /builder/extracted/application/ ./
+ENTRYPOINT ["java", "-jar", "application.jar"]
