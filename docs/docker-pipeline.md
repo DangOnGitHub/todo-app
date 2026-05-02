@@ -25,10 +25,13 @@ The git tag is the single source of truth. `build.gradle.kts` and `package.json`
 | Pull request | `pr-<number>` (local only, not pushed) |
 | Push to `main` | `edge`, `main-<short-sha>` |
 | Push of `v1.2.3` | `1.2.3`, `1.2`, `1`, `latest` |
+| Push of `v1.2.3-rc.1` | `1.2.3-rc.1` |
 
-`latest` is only updated on versioned tag pushes, so it always points to the last stable release.
+`latest` is only updated on stable versioned tag pushes — pre-release tags never move it.
 
 ## Cutting a Release
+
+### Stable release
 
 ```bash
 git tag -a v1.0.0 -m "Release 1.0.0"
@@ -36,6 +39,15 @@ git push origin v1.0.0
 ```
 
 `cd-release.yaml` triggers automatically and pushes all semver tags if the vulnerability scan passes.
+
+### Pre-release (internal / RC)
+
+```bash
+git tag -a v1.0.0-rc.1 -m "Release candidate 1.0.0-rc.1"
+git push origin v1.0.0-rc.1
+```
+
+Produces only the `1.0.0-rc.1` tag. `latest`, `1.0`, and `1` are not moved.
 
 ## Vulnerability Scanning
 
@@ -48,14 +60,6 @@ Trivy scans each image locally before it is pushed to the registry. A vulnerable
 | Version tag push | `HIGH`, `CRITICAL` |
 
 CVEs with no available fix are ignored (`ignore-unfixed: true`) to reduce noise from Alpine base images. Scan results are uploaded to **Security > Code Scanning** on every run.
-
-## One-time GitHub Setup
-
-1. **Workflow permissions** — Settings > Actions > General → set to "Read and write permissions". This grants `GITHUB_TOKEN` the `write:packages` scope needed to push to GHCR.
-
-2. **Frontend API URL** — Settings > Secrets and Variables > Actions > Variables → add `VITE_API_URL` (e.g. `https://api.yourdomain.com`). This is baked into the frontend image at build time.
-
-3. **Make packages public** — after the first push, go to `github.com/users/DangOnGitHub/packages (note: GHCR normalises the owner to lowercase — `dangongithub`)`, open each package, and set visibility to Public. This allows PR builds to read the build cache without registry credentials.
 
 ## Build Cache
 
