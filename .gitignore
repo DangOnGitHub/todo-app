@@ -1,3 +1,6 @@
+# Kubernetes secrets — never commit real secret values
+k8s/**/secret.yaml
+
 # Environment
 .env
 .env.local
