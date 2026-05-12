@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend
+  namespace: todo-app
+spec:
+  tls:
+    - hosts:
+        - todo.dangdoan.com
+      secretName: todo-app-tls
+  rules:
+    - host: todo.dangdoan.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

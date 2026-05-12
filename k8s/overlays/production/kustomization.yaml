@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - cert-manager/cluster-issuer.yaml
+  - argocd/application.yaml
+  - secrets/sealed-postgres-secret.yaml
+  - secrets/sealed-backend-secret.yaml
+  - secrets/sealed-ghcr-pull-secret.yaml
+images:
+  - name: todo-app/backend:local
+    newName: ghcr.io/dangongithub/todo-app/backend
+    newTag: edge
+  - name: todo-app/frontend:local
+    newName: ghcr.io/dangongithub/todo-app/frontend
+    newTag: edge
+patches:
+  - path: patches/backend-configmap.yaml
+  - path: patches/backend-deployment.yaml
+  - path: patches/frontend-deployment.yaml
+  - path: patches/ingress-backend.yaml
+  - path: patches/ingress-frontend.yaml

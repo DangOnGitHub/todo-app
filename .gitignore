@@ -1,5 +1,6 @@
-# Kubernetes secrets — never commit real secret values
-k8s/**/secret.yaml
+# Kubernetes secrets — ignore everything, whitelist only sealed secrets
+k8s/**/secrets/*
+!k8s/overlays/production/secrets/sealed-*.yaml
 
 # Environment
 .env
