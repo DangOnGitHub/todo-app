@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: frontend
   namespace: todo-app
+  labels:
+    app.kubernetes.io/part-of: todo-app
   annotations:
     cert-manager.io/cluster-issuer: selfsigned
 spec:
@@ -20,4 +22,4 @@ spec:
               service:
                 name: frontend
                 port:
-                  number: 80
+                  name: http

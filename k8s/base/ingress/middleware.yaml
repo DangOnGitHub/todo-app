@@ -3,6 +3,8 @@ kind: Middleware
 metadata:
   name: strip-api-prefix
   namespace: todo-app
+  labels:
+    app.kubernetes.io/part-of: todo-app
 spec:
   stripPrefix:
     prefixes:

@@ -3,22 +3,27 @@ kind: Deployment
 metadata:
   name: backend
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/part-of: todo-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app.kubernetes.io/name: backend
   template:
     metadata:
       labels:
-        app: backend
+        app.kubernetes.io/name: backend
+        app.kubernetes.io/part-of: todo-app
     spec:
       containers:
         - name: backend
           image: todo-app/backend:local
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           envFrom:
             - configMapRef:
                 name: backend-config
@@ -40,11 +45,11 @@ spec:
                   key: mail-password
           readinessProbe:
             tcpSocket:
-              port: 8080
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
-              port: 8080
+              port: http
             initialDelaySeconds: 60
             periodSeconds: 15

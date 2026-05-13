@@ -3,16 +3,20 @@ kind: StatefulSet
 metadata:
   name: postgres
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: todo-app
 spec:
   serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app.kubernetes.io/name: postgres
   template:
     metadata:
       labels:
-        app: postgres
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/part-of: todo-app
     spec:
       containers:
         - name: postgres
@@ -33,7 +37,8 @@ spec:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           ports:
-            - containerPort: 5432
+            - name: postgres
+              containerPort: 5432
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "todoapp", "-d", "todoapp"]

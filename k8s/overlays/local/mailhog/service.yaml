@@ -3,13 +3,16 @@ kind: Service
 metadata:
   name: mailhog
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: mailhog
+    app.kubernetes.io/part-of: todo-app
 spec:
   selector:
-    app: mailhog
+    app.kubernetes.io/name: mailhog
   ports:
     - name: smtp
       port: 1025
-      targetPort: 1025
+      targetPort: smtp
     - name: http
       port: 8025
-      targetPort: 8025
+      targetPort: http

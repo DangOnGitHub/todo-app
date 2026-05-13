@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: backend-config
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/part-of: todo-app
 data:
   DB_URL: jdbc:postgresql://postgres:5432/todoapp
   DB_USERNAME: todoapp

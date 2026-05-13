@@ -10,5 +10,5 @@ resources:
   - frontend/deployment.yaml
   - frontend/service.yaml
   - ingress/middleware.yaml
-  - ingress/backend.yaml
-  - ingress/frontend.yaml
+  - ingress/ingress-backend.yaml
+  - ingress/ingress-frontend.yaml

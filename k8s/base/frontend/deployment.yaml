@@ -3,19 +3,24 @@ kind: Deployment
 metadata:
   name: frontend
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: todo-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app.kubernetes.io/name: frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/part-of: todo-app
     spec:
       containers:
         - name: frontend
           image: todo-app/frontend:local
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
+            - name: http
+              containerPort: 80

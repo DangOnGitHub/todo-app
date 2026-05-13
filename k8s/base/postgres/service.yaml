@@ -3,9 +3,13 @@ kind: Service
 metadata:
   name: postgres
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: todo-app
 spec:
   selector:
-    app: postgres
+    app.kubernetes.io/name: postgres
   ports:
-    - port: 5432
-      targetPort: 5432
+    - name: postgres
+      port: 5432
+      targetPort: postgres
