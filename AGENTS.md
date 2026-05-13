@@ -33,3 +33,29 @@ Run `docker compose up -d` for the local DB.
 - **Errors**: RFC 9457 — all error responses use `Content-Type: application/problem+json`.
 - **Auth**: stateless JWT Bearer. `SecurityConfig` permits `/auth/**`, requires auth on everything else.
 - **Naming**: use full variable names (`request`, `response`, `user`) not abbreviations (`req`, `res`, `usr`). Abbreviated names are harder to read for non-native English speakers and hurt code clarity.
+
+## Kubernetes conventions
+
+### Naming
+- All resource names are lowercase kebab-case (e.g. `todo-app`, `backend-config`, `strip-api-prefix`).
+- Component resources (Deployment, Service, StatefulSet, Ingress) are named after the component: `frontend`, `backend`, `postgres`, `mailhog`.
+- Compound resources append a descriptive suffix: `backend-config` (ConfigMap), `backend-secret` / `postgres-secret` / `ghcr-pull-secret` (Secret).
+- Middleware names describe the function: `strip-api-prefix`.
+- The namespace and ArgoCD Application share the project name: `todo-app`.
+
+### File names
+- **Inside a component directory** (`backend/`, `frontend/`, `postgres/`): name the file after the kind alone — `deployment.yaml`, `service.yaml`, `configmap.yaml`, `statefulset.yaml`. The directory provides component scope.
+- **In a shared directory** (`ingress/`, `patches/`, `secrets/`): use `<component>-<kind>.yaml` — e.g. `backend-ingress.yaml`, `backend-configmap.yaml`, `postgres-secret.yaml`. This groups files by component when sorted alphabetically.
+- **SealedSecrets** add a `sealed-` prefix — `sealed-postgres-secret.yaml`, `sealed-backend-secret.yaml`.
+- **Singleton resources** with no ambiguity are named after the kind alone — `namespace.yaml`, `middleware.yaml`, `cluster-issuer.yaml`, `application.yaml`.
+
+### Labels
+Every resource carries these two labels:
+```yaml
+labels:
+  app.kubernetes.io/name: <component>   # frontend | backend | postgres | mailhog
+  app.kubernetes.io/part-of: todo-app
+```
+- `app.kubernetes.io/name` is the single source of truth for selectors (`matchLabels` and Service `selector`).
+- `app.kubernetes.io/part-of` groups all resources under the project umbrella.
+- Do not introduce custom label keys or shorthand values — follow the `app.kubernetes.io/*` recommended label scheme.

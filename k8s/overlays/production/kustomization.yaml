@@ -4,6 +4,8 @@ resources:
   - ../../base
   - cert-manager/cluster-issuer.yaml
   - argocd/application.yaml
+  - argocd/configmap.yaml
+  - argocd/ingress.yaml
   - secrets/sealed-postgres-secret.yaml
   - secrets/sealed-backend-secret.yaml
   - secrets/sealed-ghcr-pull-secret.yaml
@@ -18,5 +20,5 @@ patches:
   - path: patches/backend-configmap.yaml
   - path: patches/backend-deployment.yaml
   - path: patches/frontend-deployment.yaml
-  - path: patches/ingress-backend.yaml
-  - path: patches/ingress-frontend.yaml
+  - path: patches/backend-ingress.yaml
+  - path: patches/frontend-ingress.yaml
