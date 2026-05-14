@@ -45,6 +45,13 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: mail-password
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           readinessProbe:
             tcpSocket:
               port: http
