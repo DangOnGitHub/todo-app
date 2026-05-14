@@ -4,7 +4,8 @@ metadata:
   name: argocd-cmd-params-cm
   namespace: argocd
   labels:
-    app.kubernetes.io/name: argocd
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/component: argocd
     app.kubernetes.io/part-of: todo-app
 data:
   server.insecure: "true"

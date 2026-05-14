@@ -4,7 +4,8 @@ metadata:
   name: argocd
   namespace: argocd
   labels:
-    app.kubernetes.io/name: argocd
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/component: argocd
     app.kubernetes.io/part-of: todo-app
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt

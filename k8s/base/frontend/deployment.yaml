@@ -1,20 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: frontend-deployment
   namespace: todo-app
   labels:
-    app.kubernetes.io/name: frontend
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: todo-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: frontend
+      app.kubernetes.io/component: frontend
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: frontend
+        app.kubernetes.io/name: todo-app
+        app.kubernetes.io/component: frontend
         app.kubernetes.io/part-of: todo-app
     spec:
       containers:

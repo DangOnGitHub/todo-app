@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mailhog
+  name: mailhog-service
   namespace: todo-app
   labels:
-    app.kubernetes.io/name: mailhog
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/component: mailhog
     app.kubernetes.io/part-of: todo-app
 spec:
   selector:
-    app.kubernetes.io/name: mailhog
+    app.kubernetes.io/component: mailhog
   ports:
     - name: smtp
       port: 1025

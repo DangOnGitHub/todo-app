@@ -37,10 +37,9 @@ Run `docker compose up -d` for the local DB.
 ## Kubernetes conventions
 
 ### Naming
-- All resource names are lowercase kebab-case (e.g. `todo-app`, `backend-config`, `strip-api-prefix`).
-- Component resources (Deployment, Service, StatefulSet, Ingress) are named after the component: `frontend`, `backend`, `postgres`, `mailhog`.
-- Compound resources append a descriptive suffix: `backend-config` (ConfigMap), `backend-secret` / `postgres-secret` / `ghcr-pull-secret` (Secret).
-- Middleware names describe the function: `strip-api-prefix`.
+Resources follow `{component}-{kind}` — e.g. `backend-deployment`, `postgres-service`, `backend-configmap`. Environment context is implicit from the namespace and overlay directory.
+
+- All resource names are lowercase kebab-case.
 - The namespace and ArgoCD Application share the project name: `todo-app`.
 
 ### File names
@@ -50,12 +49,19 @@ Run `docker compose up -d` for the local DB.
 - **Singleton resources** with no ambiguity are named after the kind alone — `namespace.yaml`, `middleware.yaml`, `cluster-issuer.yaml`, `application.yaml`.
 
 ### Labels
-Every resource carries these two labels:
+Every resource carries these labels (K8s recommended label scheme):
 ```yaml
 labels:
-  app.kubernetes.io/name: <component>   # frontend | backend | postgres | mailhog
+  app.kubernetes.io/name: todo-app       # the application
+  app.kubernetes.io/component: backend   # frontend | backend | postgres | mailhog | argocd
   app.kubernetes.io/part-of: todo-app
 ```
-- `app.kubernetes.io/name` is the single source of truth for selectors (`matchLabels` and Service `selector`).
+- `app.kubernetes.io/component` is the single source of truth for pod selectors (`matchLabels` and Service `selector`).
 - `app.kubernetes.io/part-of` groups all resources under the project umbrella.
 - Do not introduce custom label keys or shorthand values — follow the `app.kubernetes.io/*` recommended label scheme.
+
+### Sealed secrets re-sealing
+When a SealedSecret's `metadata.name` changes, the encrypted data must be re-sealed — the name is part of the encryption scope. After any rename, re-seal with:
+```bash
+kubeseal --format yaml < secret.yaml > sealed-secret.yaml
+```

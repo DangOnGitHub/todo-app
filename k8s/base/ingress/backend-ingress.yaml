@@ -1,9 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend
+  name: backend-ingress
   namespace: todo-app
   labels:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/component: backend
     app.kubernetes.io/part-of: todo-app
   annotations:
     cert-manager.io/cluster-issuer: selfsigned
@@ -21,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: backend
+                name: backend-service
                 port:
                   name: http

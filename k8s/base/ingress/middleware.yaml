@@ -4,6 +4,7 @@ metadata:
   name: strip-api-prefix
   namespace: todo-app
   labels:
+    app.kubernetes.io/name: todo-app
     app.kubernetes.io/part-of: todo-app
 spec:
   stripPrefix:
