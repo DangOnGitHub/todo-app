@@ -10,6 +10,8 @@ group = "com.dangdoan"
 version = "0.0.1-SNAPSHOT"
 description = "todo-app"
 
+extra["postgresql.version"] = "42.7.11" // CVE-2026-42198
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
