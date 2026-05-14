@@ -6,6 +6,7 @@ resources:
   - argocd/application.yaml
   - argocd/configmap.yaml
   - argocd/ingress.yaml
+  - headlamp/ingress.yaml
   - secrets/sealed-postgres-secret.yaml
   - secrets/sealed-backend-secret.yaml
   - secrets/sealed-ghcr-pull-secret.yaml

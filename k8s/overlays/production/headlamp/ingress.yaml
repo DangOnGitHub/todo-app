@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: argocd-ingress
-  namespace: argocd
+  name: headlamp-ingress
+  namespace: kube-system
   labels:
     app.kubernetes.io/name: todo-app
-    app.kubernetes.io/component: argocd
+    app.kubernetes.io/component: headlamp
     app.kubernetes.io/part-of: todo-app
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
@@ -13,16 +13,16 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - argocd.dangdoan.com
-      secretName: argocd-tls
+        - headlamp.dangdoan.com
+      secretName: headlamp-tls
   rules:
-    - host: argocd.dangdoan.com
+    - host: headlamp.dangdoan.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: argocd-server
+                name: my-headlamp
                 port:
                   number: 80
