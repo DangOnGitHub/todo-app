@@ -7,6 +7,11 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      data-source-properties:
+        tcpKeepAlive: true
+        socketTimeout: 30
   flyway:
     enabled: true
   mail:

@@ -23,6 +23,14 @@ spec:
       containers:
         - name: postgres
           image: postgres:18
+          args:
+            - postgres
+            - -c
+            - tcp_keepalives_idle=300
+            - -c
+            - tcp_keepalives_interval=30
+            - -c
+            - tcp_keepalives_count=2
           env:
             - name: POSTGRES_DB
               value: todoapp
