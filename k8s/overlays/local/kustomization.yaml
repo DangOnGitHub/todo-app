@@ -5,6 +5,13 @@ resources:
   - cert-manager/cluster-issuer.yaml
   - mailhog/deployment.yaml
   - mailhog/service.yaml
+images:
+  - name: ghcr.io/dangongithub/todo-app/frontend
+    newName: localhost/todo-app/frontend
+    newTag: local
+  - name: ghcr.io/dangongithub/todo-app/backend
+    newName: localhost/todo-app/backend
+    newTag: local
 patches:
   - path: patches/backend-configmap.yaml
   - path: patches/backend-ingress.yaml

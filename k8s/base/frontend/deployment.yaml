@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: todo-app/frontend:local
+          image: ghcr.io/dangongithub/todo-app/frontend
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

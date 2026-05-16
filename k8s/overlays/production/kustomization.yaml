@@ -11,11 +11,9 @@ resources:
   - secrets/sealed-backend-secret.yaml
   - secrets/sealed-ghcr-pull-secret.yaml
 images:
-  - name: todo-app/backend:local
-    newName: ghcr.io/dangongithub/todo-app/backend
+  - name: ghcr.io/dangongithub/todo-app/backend
     newTag: edge
-  - name: todo-app/frontend:local
-    newName: ghcr.io/dangongithub/todo-app/frontend
+  - name: ghcr.io/dangongithub/todo-app/frontend
     newTag: edge
 patches:
   - path: patches/backend-configmap.yaml

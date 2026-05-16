@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: todo-app/backend:local
+          image: ghcr.io/dangongithub/todo-app/backend
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
