@@ -8,6 +8,6 @@ data:
   CORS_ALLOWED_ORIGINS: https://todo.dangdoan.com
   MAIL_HOST: smtp.mailgun.org
   MAIL_PORT: "587"
-  MAIL_USERNAME: noreply@mg.dangdoan.com
+  MAIL_USERNAME: todoapp@mg.dangdoan.com
   MAIL_SMTP_AUTH: "true"
   MAIL_SMTP_STARTTLS: "true"
