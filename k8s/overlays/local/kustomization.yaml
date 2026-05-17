@@ -14,5 +14,3 @@ images:
     newTag: local
 patches:
   - path: patches/backend-configmap.yaml
-  - path: patches/backend-ingress.yaml
-  - path: patches/frontend-ingress.yaml

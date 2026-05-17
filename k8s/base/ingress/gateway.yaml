@@ -1,0 +1,24 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: todo-app-gateway
+  namespace: todo-app
+  labels:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/part-of: todo-app
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: localhost
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: todo-app-tls
+      allowedRoutes:
+        namespaces:
+          from: Same

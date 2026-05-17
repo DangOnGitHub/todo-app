@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: todo-app-gateway
+  namespace: todo-app
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: todo.dangdoan.com
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: todo-app-tls
+      allowedRoutes:
+        namespaces:
+          from: Same

@@ -19,5 +19,4 @@ patches:
   - path: patches/backend-configmap.yaml
   - path: patches/backend-deployment.yaml
   - path: patches/frontend-deployment.yaml
-  - path: patches/backend-ingress.yaml
-  - path: patches/frontend-ingress.yaml
+  - path: patches/gateway.yaml
