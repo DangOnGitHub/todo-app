@@ -36,29 +36,11 @@ Run `docker compose up -d` for the local DB.
 
 ## Kubernetes conventions
 
-### Naming
-Resources follow `{component}-{kind}` — e.g. `backend-deployment`, `postgres-service`, `backend-configmap`. Environment context is implicit from the namespace and overlay directory.
-
-- All resource names are lowercase kebab-case.
-- The namespace and ArgoCD Application share the project name: `todo-app`.
-
 ### File names
 - **Inside a component directory** (`backend/`, `frontend/`, `postgres/`): name the file after the kind alone — `deployment.yaml`, `service.yaml`, `configmap.yaml`, `statefulset.yaml`. The directory provides component scope.
 - **In a shared directory** (`ingress/`, `patches/`, `secrets/`): use `<component>-<kind>.yaml` — e.g. `backend-ingress.yaml`, `backend-configmap.yaml`, `postgres-secret.yaml`. This groups files by component when sorted alphabetically.
 - **SealedSecrets** add a `sealed-` prefix — `sealed-postgres-secret.yaml`, `sealed-backend-secret.yaml`.
 - **Singleton resources** with no ambiguity are named after the kind alone — `namespace.yaml`, `middleware.yaml`, `cluster-issuer.yaml`, `application.yaml`.
-
-### Labels
-Every resource carries these labels (K8s recommended label scheme):
-```yaml
-labels:
-  app.kubernetes.io/name: todo-app       # the application
-  app.kubernetes.io/component: backend   # frontend | backend | postgres | mailhog | argocd
-  app.kubernetes.io/part-of: todo-app
-```
-- `app.kubernetes.io/component` is the single source of truth for pod selectors (`matchLabels` and Service `selector`).
-- `app.kubernetes.io/part-of` groups all resources under the project umbrella.
-- Do not introduce custom label keys or shorthand values — follow the `app.kubernetes.io/*` recommended label scheme.
 
 ### Sealed secrets re-sealing
 When a SealedSecret's `metadata.name` changes, the encrypted data must be re-sealed — the name is part of the encryption scope. After any rename, re-seal with:

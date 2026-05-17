@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: backend
   namespace: todo-app
   labels:
     app.kubernetes.io/name: todo-app
@@ -28,22 +28,22 @@ spec:
               containerPort: 8080
           envFrom:
             - configMapRef:
-                name: backend-configmap
+                name: backend
           env:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: backend-secret
+                  name: backend
                   key: db-password
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: backend-secret
+                  name: backend
                   key: jwt-secret
             - name: MAIL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: backend-secret
+                  name: backend
                   key: mail-password
           resources:
             requests:
