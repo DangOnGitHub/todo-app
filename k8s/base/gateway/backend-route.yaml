@@ -22,5 +22,5 @@ spec:
               type: ReplacePrefixMatch
               replacePrefixMatch: /
       backendRefs:
-        - name: backend-service
+        - name: backend
           port: 8080

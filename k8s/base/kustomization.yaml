@@ -12,3 +12,4 @@ resources:
   - gateway/gateway.yaml
   - gateway/backend-route.yaml
   - gateway/frontend-route.yaml
+  - traefik/helmchartconfig.yaml

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../base
   - cert-manager/cluster-issuer.yaml
+  - cert-manager/certificate.yaml
   - mailhog/deployment.yaml
   - mailhog/service.yaml
 images:
