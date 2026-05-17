@@ -9,5 +9,6 @@ data:
   MAIL_HOST: smtp.mailgun.org
   MAIL_PORT: "587"
   MAIL_USERNAME: todoapp@mg.dangdoan.com
+  MAIL_FROM: noreply@mg.dangdoan.com
   MAIL_SMTP_AUTH: "true"
   MAIL_SMTP_STARTTLS: "true"

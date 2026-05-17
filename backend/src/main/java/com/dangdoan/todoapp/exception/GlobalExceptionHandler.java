@@ -3,6 +3,8 @@ package com.dangdoan.todoapp.exception;
 import com.dangdoan.todoapp.model.ValidationError;
 import com.dangdoan.todoapp.model.ValidationProblem;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -15,6 +17,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(UsernameAlreadyTakenException.class)
   ResponseEntity<ProblemDetail> handleUsernameAlreadyTaken(UsernameAlreadyTakenException ex) {
@@ -111,6 +115,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(RuntimeException.class)
   ResponseEntity<ProblemDetail> handleRuntimeException(RuntimeException ex) {
+    log.error("Unhandled exception", ex);
     var problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
     problemDetail.setDetail("An unexpected error occurred. Please try again later.");
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
