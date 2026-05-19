@@ -13,9 +13,9 @@ resources:
   - secrets/sealed-ghcr-pull-secret.yaml
 images:
   - name: ghcr.io/dangongithub/todo-app/backend
-    newTag: main-ec6bdac
+    newTag: main-3ff4504
   - name: ghcr.io/dangongithub/todo-app/frontend
-    newTag: main-ec6bdac
+    newTag: main-3ff4504
 patches:
   - path: patches/backend-configmap.yaml
   - path: patches/backend-deployment.yaml
