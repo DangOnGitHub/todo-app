@@ -8,25 +8,24 @@ Monorepo with three top-level entries:
 
 ## Key commands
 
+Run build and generate commands only from the owning component directory. Do not invoke backend or frontend build tools from the repository root.
+
 ### Backend
 ```bash
 # from backend/
-./gradlew openApiGenerate   # generate Spring interfaces from openapi.yaml
-./gradlew spotlessApply     # format with Google Java Format
-./gradlew bootRun           # run (requires env vars below)
+./gradlew openApiGenerate # generate Spring interfaces from openapi.yaml
+./gradlew build -x test # build
 ```
 
 ### Frontend
 ```bash
 # from frontend/
-npm run generate   # generate TypeScript types from openapi.yaml → src/api/schema.d.ts
-npm run dev        # dev server at http://localhost:5173
+npm run generate # generate TypeScript types from openapi.yaml → src/api/schema.d.ts
+npm run build # build
 ```
 
 ## Environment variables
 Required at runtime — no defaults, app refuses to start if missing. See `.env.example` for the full list.
-
-Run `docker compose up -d` for the local DB.
 
 ## Architecture notes
 - **OpenAPI-first**: never edit generated code under `build/generated/`. Re-run `openApiGenerate` after changing `openapi.yaml`.
@@ -37,13 +36,8 @@ Run `docker compose up -d` for the local DB.
 ## Kubernetes conventions
 
 ### File names
+- **Use kebab-case for resource kind names** when they appear in file names — e.g. `pod-disruption-budget.yaml`, `cluster-issuer.yaml`, `sealed-backend-secret.yaml`.
 - **Inside a component directory** (`backend/`, `frontend/`, `postgres/`): name the file after the kind alone — `deployment.yaml`, `service.yaml`, `configmap.yaml`, `statefulset.yaml`. The directory provides component scope.
-- **In a shared directory** (`ingress/`, `patches/`, `secrets/`): use `<component>-<kind>.yaml` — e.g. `backend-ingress.yaml`, `backend-configmap.yaml`, `postgres-secret.yaml`. This groups files by component when sorted alphabetically.
+- **In a shared directory** (`ingress/`, `patches/`, `secrets/`): use `<component>-<kind>.yaml` — e.g. `backend-ingress.yaml`, `backend-configmap.yaml`, `backend-pod-disruption-budget.yaml`, `postgres-secret.yaml`. This groups files by component when sorted alphabetically.
 - **SealedSecrets** add a `sealed-` prefix — `sealed-postgres-secret.yaml`, `sealed-backend-secret.yaml`.
 - **Singleton resources** with no ambiguity are named after the kind alone — `namespace.yaml`, `middleware.yaml`, `cluster-issuer.yaml`, `application.yaml`.
-
-### Sealed secrets re-sealing
-When a SealedSecret's `metadata.name` changes, the encrypted data must be re-sealed — the name is part of the encryption scope. After any rename, re-seal with:
-```bash
-kubeseal --format yaml < secret.yaml > sealed-secret.yaml
-```

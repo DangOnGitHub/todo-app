@@ -6,6 +6,13 @@ metadata:
 spec:
   template:
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: backend
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:

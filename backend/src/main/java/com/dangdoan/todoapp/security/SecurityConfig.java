@@ -29,6 +29,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(
       HttpSecurity http,
       JwtAuthenticationFilter jwtFilter,
+      RequestLoggingFilter requestLoggingFilter,
       CorsConfigurationSource corsConfigurationSource)
       throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
@@ -45,12 +46,18 @@ public class SecurityConfig {
                       response.getWriter().write(UNAUTHORIZED_BODY);
                     }))
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(requestLoggingFilter, JwtAuthenticationFilter.class)
         .build();
   }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService) {
     return new JwtAuthenticationFilter(jwtService);
+  }
+
+  @Bean
+  public RequestLoggingFilter requestLoggingFilter() {
+    return new RequestLoggingFilter();
   }
 
   @Bean

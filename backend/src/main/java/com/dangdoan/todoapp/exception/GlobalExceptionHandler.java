@@ -18,7 +18,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(UsernameAlreadyTakenException.class)
   ResponseEntity<ProblemDetail> handleUsernameAlreadyTaken(UsernameAlreadyTakenException ex) {
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(RuntimeException.class)
   ResponseEntity<ProblemDetail> handleRuntimeException(RuntimeException ex) {
-    log.error("Unhandled exception", ex);
+    logger.error("Unhandled exception", ex);
     var problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
     problemDetail.setDetail("An unexpected error occurred. Please try again later.");
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
