@@ -7,7 +7,7 @@ Three GitHub Actions workflows manage the full image lifecycle:
 | Workflow | Trigger | Outcome |
 |---|---|---|
 | `ci.yaml` | Pull request → `main` | Build + scan (no push) |
-| `cd-main.yaml` | Push to `main` | Build + scan + push `edge` tags |
+| `cd-main.yaml` | Push to `main` | Build + scan + push `edge` and `main-<short-sha>` tags, then commit the production image tags |
 | `cd-release.yaml` | Push of `v*.*.*` tag | Build + scan + push semver tags |
 
 Both `backend` and `frontend` images are built and pushed in parallel to:
@@ -28,6 +28,13 @@ The git tag is the single source of truth. `build.gradle.kts` and `package.json`
 | Push of `v1.2.3-rc.1` | `1.2.3-rc.1` |
 
 `latest` is only updated on stable versioned tag pushes — pre-release tags never move it.
+
+## Production Deployment
+
+Production does not follow moving image tags. After a successful push to `main`, `cd-main.yaml`
+commits `k8s/overlays/production/kustomization.yaml` with the new backend and frontend image tags
+`main-<short-sha>`. Argo CD then syncs that manifest change and rolls both workloads to the exact
+images built from that Git commit.
 
 ## Cutting a Release
 
