@@ -11,6 +11,7 @@ version = "0.0.1-SNAPSHOT"
 description = "todo-app"
 
 extra["postgresql.version"] = "42.7.11" // CVE-2026-42198
+extra["tomcat.version"] = "11.0.22" // CVE-2026-43512
 
 java {
     toolchain {
