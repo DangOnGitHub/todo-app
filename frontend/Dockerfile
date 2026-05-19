@@ -1,5 +1,4 @@
 FROM node:24-alpine AS build
-RUN apk update && apk upgrade --no-cache
 WORKDIR /workspace/frontend
 
 COPY frontend/package*.json ./
@@ -12,6 +11,6 @@ ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run generate && npm run build
 
 FROM nginx:alpine
-RUN apk update && apk upgrade --no-cache
+RUN apk upgrade --no-cache
 COPY --from=build /workspace/frontend/dist /usr/share/nginx/html
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf

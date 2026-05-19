@@ -16,6 +16,7 @@ RUN java -Djarmode=tools -jar application.jar extract --layers --destination ext
 
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /application
+RUN apk upgrade --no-cache
 COPY --from=extract /builder/extracted/dependencies/ ./
 COPY --from=extract /builder/extracted/spring-boot-loader/ ./
 COPY --from=extract /builder/extracted/snapshot-dependencies/ ./
